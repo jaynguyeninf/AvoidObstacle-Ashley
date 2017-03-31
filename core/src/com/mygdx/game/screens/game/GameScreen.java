@@ -16,6 +16,7 @@ import com.mygdx.game.configurations.GameConfig;
 import com.mygdx.game.system.BoundsSystem;
 import com.mygdx.game.system.MovementSystem;
 import com.mygdx.game.system.UserInputSystem;
+import com.mygdx.game.system.WorldWrapperSystem;
 import com.mygdx.game.system.debug.DebugCameraSystem;
 import com.mygdx.game.system.debug.DebugRenderSystem;
 import com.mygdx.game.system.debug.GridRenderSystem;
@@ -51,12 +52,14 @@ public class GameScreen implements Screen {
         entityFactory = new EntityFactory(engine);
 
         //add systems to engine //optional: call super() in system to set priority
-        engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
         engine.addSystem(new DebugCameraSystem(camera, GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y));
-        engine.addSystem(new DebugRenderSystem(viewport,shapeRenderer));
         engine.addSystem(new UserInputSystem());
         engine.addSystem(new MovementSystem());
+        engine.addSystem(new WorldWrapperSystem(viewport)); //before BoundsSystem
         engine.addSystem(new BoundsSystem());
+
+        engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
+        engine.addSystem(new DebugRenderSystem(viewport,shapeRenderer));
 
         entityFactory.addPlayer();
     }

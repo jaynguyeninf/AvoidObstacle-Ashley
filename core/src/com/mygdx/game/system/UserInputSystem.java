@@ -31,13 +31,21 @@ public class UserInputSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         MovementComponent movementComponent = Mappers.MOVEMENT_COMPONENT.get(entity);
 
-        movementComponent.xSpeed = 0; //default if not pressed
+        movementComponent.xSpeed = 0; //stop moving if not pressed
 
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             movementComponent.xSpeed = GameConfig.MAX_PLAYER_X_SPEED;
         } else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
             movementComponent.xSpeed = -GameConfig.MAX_PLAYER_X_SPEED;
         }
+
+
+//        movementComponent.ySpeed = 0; //stop moving if not pressed
+//        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+//            movementComponent.ySpeed = GameConfig.MAX_PLAYER_X_SPEED;
+//        } else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+//            movementComponent.ySpeed = -GameConfig.MAX_PLAYER_X_SPEED;
+//        }
 
         log.debug("processEntity xSpeed = " +movementComponent.xSpeed);
     }

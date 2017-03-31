@@ -15,8 +15,8 @@ public class BoundsSystem extends IteratingSystem {
 
 
     private static final Family FAMILY = Family.all(
-            BoundsComponent.class,
-            PositionComponent.class
+//            BoundsComponent.class,
+//            PositionComponent.class
     ).get();
 
     public BoundsSystem(){

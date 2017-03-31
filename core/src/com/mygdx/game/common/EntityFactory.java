@@ -7,6 +7,7 @@ import com.mygdx.game.components.BoundsComponent;
 import com.mygdx.game.components.MovementComponent;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PositionComponent;
+import com.mygdx.game.components.WorldWrapperComponent;
 import com.mygdx.game.configurations.GameConfig;
 
 public class EntityFactory {
@@ -31,11 +32,14 @@ public class EntityFactory {
         positionComponent.x = startX;
         positionComponent.y = startY;
 
+        WorldWrapperComponent worldWrapperComponent = engine.createComponent(WorldWrapperComponent.class);
+
         Entity entity = engine.createEntity();
         entity.add(boundsComponent);
         entity.add(movementComponent);
         entity.add(playerComponent);
         entity.add(positionComponent);
+        entity.add(worldWrapperComponent);
         engine.addEntity(entity);
 
     }
