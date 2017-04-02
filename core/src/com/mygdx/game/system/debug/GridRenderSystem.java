@@ -2,7 +2,6 @@ package com.mygdx.game.system.debug;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.utilities.MyViewportUtil;
 
@@ -12,7 +11,6 @@ import com.mygdx.game.utilities.MyViewportUtil;
 
 //Draw debug grids
 public class GridRenderSystem extends EntitySystem {
-    private static final Logger log = new Logger(GridRenderSystem.class.getName(), Logger.DEBUG);
 
     private final Viewport viewport;
     private final ShapeRenderer shapeRenderer;
@@ -24,7 +22,6 @@ public class GridRenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        log.debug("update()");
         viewport.apply();
         MyViewportUtil.drawGrid(viewport, shapeRenderer);
     }

@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.MovementComponent;
 import com.mygdx.game.components.PlayerComponent;
@@ -16,7 +15,6 @@ import com.mygdx.game.configurations.GameConfig;
  */
 
 public class UserInputSystem extends IteratingSystem {
-    private static final Logger log = new Logger(UserInputSystem.class.getName(), Logger.DEBUG);
 
     private static final Family FAMILY = Family.all(
             PlayerComponent.class,
@@ -47,6 +45,5 @@ public class UserInputSystem extends IteratingSystem {
 //            movementComponent.ySpeed = -GameConfig.MAX_PLAYER_X_SPEED;
 //        }
 
-        log.debug("processEntity xSpeed = " +movementComponent.xSpeed);
     }
 }

@@ -2,7 +2,6 @@ package com.mygdx.game.system.debug;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.utilities.debug.DebugCameraController;
 
 /**
@@ -11,7 +10,6 @@ import com.mygdx.game.utilities.debug.DebugCameraController;
 
 public class DebugCameraSystem extends EntitySystem {
 
-    private static final Logger log = new Logger(DebugCameraSystem.class.getName(), Logger.DEBUG);
     private static final DebugCameraController DEBUG_CAMERA_SYSTEM = new DebugCameraController();
 
     private final OrthographicCamera camera;
@@ -23,7 +21,6 @@ public class DebugCameraSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        log.debug("update()");
         DEBUG_CAMERA_SYSTEM.handleInputDebug(deltaTime);
         DEBUG_CAMERA_SYSTEM.applyTo(camera);
     }

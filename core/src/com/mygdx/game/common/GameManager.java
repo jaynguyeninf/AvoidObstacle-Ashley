@@ -5,6 +5,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.AvoidObstacleGame;
 import com.mygdx.game.configurations.DifficultyLevel;
+import com.mygdx.game.configurations.GameConfig;
 
 /**
  * Created by Jay Nguyen on 3/17/2017.
@@ -22,6 +23,8 @@ public class GameManager {
 
     private int highScore;
     private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
+    private int lives = GameConfig.LIVES_AT_START;
+    private int score;
 
 
     private GameManager() {
@@ -33,7 +36,7 @@ public class GameManager {
 
     }
 
-    public void updateHighScore(int score) {
+    public void updateHighScore() {
         //if score is less than high score than there's no need to update it
         if (score < highScore) {
             return;
@@ -57,7 +60,7 @@ public class GameManager {
     }
 
     public void updateDifficulty(DifficultyLevel newDifficultyLevel) {
-        if(difficultyLevel == newDifficultyLevel){
+        if (difficultyLevel == newDifficultyLevel) {
             return; //return if current = new
         }
 
@@ -65,5 +68,30 @@ public class GameManager {
 
         prefs.putString(DIFFICULTY_KEY, difficultyLevel.name());
         prefs.flush();
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void decreaseLives() {
+        lives--;
+    }
+
+    public boolean isGameOver() {
+        return lives <= 0;
+    }
+
+    public void reset(){
+        lives = GameConfig.LIVES_AT_START;
+        score = 0;
+    }
+
+    public void updateScore(int amount){
+        score += amount;
     }
 }

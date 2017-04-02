@@ -4,19 +4,30 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.AvoidObstacleGame;
+import com.mygdx.game.assets.AssetDescriptors;
 import com.mygdx.game.common.EntityFactory;
+import com.mygdx.game.common.GameManager;
 import com.mygdx.game.configurations.GameConfig;
+import com.mygdx.game.screens.menu.MenuScreen;
 import com.mygdx.game.system.BoundsSystem;
+import com.mygdx.game.system.CleanUpSystem;
+import com.mygdx.game.system.HudRenderSystem;
 import com.mygdx.game.system.MovementSystem;
+import com.mygdx.game.system.ObstacleSpawnSystem;
+import com.mygdx.game.system.ScoreSystem;
 import com.mygdx.game.system.UserInputSystem;
 import com.mygdx.game.system.WorldWrapperSystem;
+import com.mygdx.game.system.collisions.CollisionListener;
+import com.mygdx.game.system.collisions.CollisionSystem;
 import com.mygdx.game.system.debug.DebugCameraSystem;
 import com.mygdx.game.system.debug.DebugRenderSystem;
 import com.mygdx.game.system.debug.GridRenderSystem;
@@ -32,10 +43,14 @@ public class GameScreen implements Screen {
     private final AssetManager assetManager;
 
     private Viewport viewport;
+    private Viewport hudViewport;
     private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
     private PooledEngine engine; //PooledEngine will take care of traditional pooling
     private EntityFactory entityFactory;
+    private Sound hitSound;
+
+    private boolean reset;
 
     public GameScreen(AvoidObstacleGame game) {
         this.game = game;
@@ -46,10 +61,29 @@ public class GameScreen implements Screen {
     public void show() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
+        hudViewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT); //internal camera
         shapeRenderer = new ShapeRenderer();
         engine = new PooledEngine();
-
         entityFactory = new EntityFactory(engine);
+        BitmapFont font = assetManager.get(AssetDescriptors.FONT);
+        hitSound = assetManager.get(AssetDescriptors.HIT_SOUND);
+
+        CollisionListener listener = new CollisionListener() {
+            @Override
+            public void hitObstacle() {
+                GameManager.INSTANCE.decreaseLives();
+                hitSound.play();
+
+                if (GameManager.INSTANCE.isGameOver()) {
+                    GameManager.INSTANCE.updateHighScore();
+                } else {
+                    //removeAllEntities() uses scheduledForRemoval which means it is called only when its system's update() is done.
+                    engine.removeAllEntities();
+                    reset = true;
+                }
+
+            }
+        };
 
         //add systems to engine //optional: call super() in system to set priority
         engine.addSystem(new DebugCameraSystem(camera, GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y));
@@ -57,11 +91,18 @@ public class GameScreen implements Screen {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldWrapperSystem(viewport)); //before BoundsSystem
         engine.addSystem(new BoundsSystem());
+        engine.addSystem(new ObstacleSpawnSystem(entityFactory));
+        engine.addSystem(new CleanUpSystem());
+        engine.addSystem(new CollisionSystem(listener));
+        engine.addSystem(new ScoreSystem());
 
         engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
-        engine.addSystem(new DebugRenderSystem(viewport,shapeRenderer));
+        engine.addSystem(new DebugRenderSystem(viewport, shapeRenderer));
+
+        engine.addSystem(new HudRenderSystem(hudViewport, font, game.getBatch()));
 
         entityFactory.addPlayer();
+
     }
 
     @Override
@@ -71,14 +112,29 @@ public class GameScreen implements Screen {
 
         //this will call update() on all systems
         engine.update(delta);
-        log.debug("entities size = " + engine.getEntities().size());
 
+        //switch screen when game is over
+        if(GameManager.INSTANCE.isGameOver()){
+            GameManager.INSTANCE.reset(); //reset score and lives otherwise game stay in Menu Screen
+            game.setScreen(new MenuScreen(game));
+        }
 
+        ///called after update() because of removeAllEntities uses scheduledForRemoval
+        if(reset){
+            reset = false;
+            customAddEntities();
+        }
+
+    }
+
+    private void customAddEntities(){
+        entityFactory.addPlayer();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        hudViewport.update(width, height, true);
     }
 
     @Override

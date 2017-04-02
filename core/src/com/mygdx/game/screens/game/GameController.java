@@ -83,7 +83,7 @@ public class GameController {
 //      check if game is over, if not, it will restart.
             if (isGameOver()) {
                 log.debug("Game is Over!");
-                GameManager.INSTANCE.updateHighScore(score);
+//                GameManager.INSTANCE.updateHighScore(score);
 
             } else {
                 restart();

@@ -3,7 +3,6 @@ package com.mygdx.game.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.MovementComponent;
 import com.mygdx.game.components.PositionComponent;
@@ -13,8 +12,6 @@ import com.mygdx.game.components.PositionComponent;
  */
 
 public class MovementSystem extends IteratingSystem {
-
-    private static final Logger log = new Logger(MovementSystem.class.getName(), Logger.DEBUG);
 
     private static final Family FAMILY = Family.all(
             PositionComponent.class,
@@ -32,7 +29,5 @@ public class MovementSystem extends IteratingSystem {
 
         positionComponent.x += movementComponent.xSpeed;
         positionComponent.y += movementComponent.ySpeed;
-
-        log.debug("processEntity xSpeed = " + positionComponent.x + " ySpeed = " + positionComponent.y);
     }
 }
