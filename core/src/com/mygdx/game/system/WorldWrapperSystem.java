@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.PositionComponent;
+import com.mygdx.game.components.SizeComponent;
 import com.mygdx.game.components.WorldWrapperComponent;
 
 /**
@@ -19,7 +20,8 @@ public class WorldWrapperSystem extends IteratingSystem {
 
     private static final Family FAMILY = Family.all(
             WorldWrapperComponent.class,
-            PositionComponent.class
+            PositionComponent.class,
+            SizeComponent.class
     ).get();
 
     public WorldWrapperSystem(Viewport viewport) {
@@ -30,7 +32,9 @@ public class WorldWrapperSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         PositionComponent positionComponent = Mappers.POSITION_COMPONENT.get(entity);
-        positionComponent.x = MathUtils.clamp(positionComponent.x, 0, viewport.getWorldWidth());
+        SizeComponent sizeComponent = Mappers.SIZE_COMPONENT.get(entity);
+
+        positionComponent.x = MathUtils.clamp(positionComponent.x, 0, viewport.getWorldWidth() - sizeComponent.width);
         positionComponent.y = MathUtils.clamp(positionComponent.y, 0, viewport.getWorldHeight());
     }
 }

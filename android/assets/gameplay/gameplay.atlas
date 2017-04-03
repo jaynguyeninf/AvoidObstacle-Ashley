@@ -5,22 +5,36 @@ filter: Nearest,Nearest
 repeat: none
 background
   rotate: false
-  xy: 1, 95
-  size: 480, 800
-  orig: 480, 800
+  xy: 1, 180
+  size: 400, 600
+  orig: 400, 600
   offset: 0, 0
   index: -1
 obstacle
   rotate: false
-  xy: 1, 45
-  size: 48, 48
-  orig: 48, 48
+  xy: 1, 83
+  size: 80, 95
+  orig: 80, 95
   offset: 0, 0
   index: -1
 player
   rotate: false
+  xy: 403, 696
+  size: 80, 84
+  orig: 80, 84
+  offset: 0, 0
+  index: -1
+live_coin
+  rotate: false
   xy: 1, 1
-  size: 48, 42
-  orig: 48, 42
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+score_coin
+  rotate: false
+  xy: 83, 99
+  size: 80, 79
+  orig: 80, 79
   offset: 0, 0
   index: -1

@@ -72,6 +72,8 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.FONT);
         assetManager.load(AssetDescriptors.GAMEPLAY_ATLAS);
         assetManager.load(AssetDescriptors.HIT_SOUND);
+        assetManager.load(AssetDescriptors.COLLECT_LIFE_SOUND);
+        assetManager.load(AssetDescriptors.COLLECT_SCORE_SOUND);
 
     }
 

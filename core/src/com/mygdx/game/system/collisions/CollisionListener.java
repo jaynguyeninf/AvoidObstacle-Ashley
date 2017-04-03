@@ -7,4 +7,5 @@ package com.mygdx.game.system.collisions;
 public interface CollisionListener {
 
     void hitObstacle();
+    void hitLivesCoin();
 }

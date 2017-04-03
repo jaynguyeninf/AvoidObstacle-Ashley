@@ -21,9 +21,10 @@ import com.mygdx.game.screens.menu.MenuScreen;
 import com.mygdx.game.system.BoundsSystem;
 import com.mygdx.game.system.CleanUpSystem;
 import com.mygdx.game.system.HudRenderSystem;
+import com.mygdx.game.system.LifeCollectibleSpawnSystem;
 import com.mygdx.game.system.MovementSystem;
-import com.mygdx.game.system.ObstacleSpawnSystem;
 import com.mygdx.game.system.ScoreSystem;
+import com.mygdx.game.system.TextureRenderSystem;
 import com.mygdx.game.system.UserInputSystem;
 import com.mygdx.game.system.WorldWrapperSystem;
 import com.mygdx.game.system.collisions.CollisionListener;
@@ -38,6 +39,7 @@ import com.mygdx.game.system.debug.GridRenderSystem;
 
 public class GameScreen implements Screen {
     private static final Logger log = new Logger(GameScreen.class.getName(), Logger.DEBUG);
+    private static final boolean DEBUG = true;
 
     private final AvoidObstacleGame game;
     private final AssetManager assetManager;
@@ -48,7 +50,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private PooledEngine engine; //PooledEngine will take care of traditional pooling
     private EntityFactory entityFactory;
-    private Sound hitSound;
+    private Sound hitSound, collectLifeSound, collectScoreSound;
 
     private boolean reset;
 
@@ -64,10 +66,13 @@ public class GameScreen implements Screen {
         hudViewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT); //internal camera
         shapeRenderer = new ShapeRenderer();
         engine = new PooledEngine();
-        entityFactory = new EntityFactory(engine);
+        entityFactory = new EntityFactory(engine, assetManager);
         BitmapFont font = assetManager.get(AssetDescriptors.FONT);
         hitSound = assetManager.get(AssetDescriptors.HIT_SOUND);
+        collectLifeSound = assetManager.get(AssetDescriptors.COLLECT_LIFE_SOUND);
+        collectScoreSound= assetManager.get(AssetDescriptors.COLLECT_SCORE_SOUND);
 
+        //implemented abstract methods from CollisionListener
         CollisionListener listener = new CollisionListener() {
             @Override
             public void hitObstacle() {
@@ -81,27 +86,40 @@ public class GameScreen implements Screen {
                     engine.removeAllEntities();
                     reset = true;
                 }
+            }
+
+            @Override
+            public void hitLivesCoin() {
+                GameManager.INSTANCE.increaseLives();
+                collectLifeSound.play();
 
             }
         };
 
         //add systems to engine //optional: call super() in system to set priority
-        engine.addSystem(new DebugCameraSystem(camera, GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y));
         engine.addSystem(new UserInputSystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldWrapperSystem(viewport)); //before BoundsSystem
         engine.addSystem(new BoundsSystem());
-        engine.addSystem(new ObstacleSpawnSystem(entityFactory));
+//        engine.addSystem(new ObstacleSpawnSystem(entityFactory));
+        engine.addSystem(new LifeCollectibleSpawnSystem(entityFactory));
         engine.addSystem(new CleanUpSystem());
         engine.addSystem(new CollisionSystem(listener));
         engine.addSystem(new ScoreSystem());
 
-        engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
-        engine.addSystem(new DebugRenderSystem(viewport, shapeRenderer));
+        engine.addSystem(new TextureRenderSystem(viewport,game.getBatch()));
+
+        if(DEBUG){
+            engine.addSystem(new DebugCameraSystem(camera, GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y));
+            engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
+            engine.addSystem(new DebugRenderSystem(viewport, shapeRenderer));
+        }
+
+
 
         engine.addSystem(new HudRenderSystem(hudViewport, font, game.getBatch()));
 
-        entityFactory.addPlayer();
+        customAddEntities();
 
     }
 
@@ -128,6 +146,7 @@ public class GameScreen implements Screen {
     }
 
     private void customAddEntities(){
+        entityFactory.addBackground();
         entityFactory.addPlayer();
     }
 

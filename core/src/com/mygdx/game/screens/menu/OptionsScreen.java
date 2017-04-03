@@ -98,7 +98,6 @@ public class OptionsScreen extends MenuScreenBase {
         game.setScreen(new MenuScreen(game));
     }
 
-    //TODO: Make actions stop when CheckBox changes
     private void checkedAnimation(CheckBox checkedBox){
             checkedBox.setTransform(true);
             checkedBox.setOrigin(checkedBox.getPrefWidth() / 2, checkedBox.getPrefHeight() / 2);

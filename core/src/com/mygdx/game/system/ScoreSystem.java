@@ -7,6 +7,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.mygdx.game.common.GameManager;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.ObstacleComponent;
+import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PositionComponent;
 import com.mygdx.game.configurations.GameConfig;
 
@@ -16,24 +17,34 @@ import com.mygdx.game.configurations.GameConfig;
 
 public class ScoreSystem extends EntitySystem {
 
-    private static final Family FAMILY = Family.all(
+    private static final Family OBSTACLE_FAMILY = Family.all(
             PositionComponent.class,
             ObstacleComponent.class
     ).get();
 
+    private static final Family PLAYER_FAMILY = Family.all(
+            PlayerComponent.class,
+            ObstacleComponent.class
+    ).get();
 
     @Override
     public void update(float deltaTime) {
+        ImmutableArray<Entity> obstacles = getEngine().getEntitiesFor(OBSTACLE_FAMILY);
+        ImmutableArray<Entity> players = getEngine().getEntitiesFor(PLAYER_FAMILY);
 
-        ImmutableArray<Entity> obstacles = getEngine().getEntitiesFor(FAMILY);
+            for(Entity entity: obstacles){
+                PositionComponent position = Mappers.POSITION_COMPONENT.get(entity);
 
-        for(Entity entity : obstacles) {
-            PositionComponent positionComponent = Mappers.POSITION_COMPONENT.get(entity);
-            ObstacleComponent obstacleComponent = Mappers.OBSTACLE_COMPONENT.get(entity);
-            if(positionComponent.y < GameConfig.PLAYER_BOUNDS_DIMENSION && !obstacleComponent.passed){
-                GameManager.INSTANCE.updateScore(1);
-                obstacleComponent.passed = true;
+                ObstacleComponent obstacleComponent = Mappers.OBSTACLE_COMPONENT.get(entity);
+
+                if(position.y <= GameConfig.PLAYER_BOUNDS_DIMENSION && !obstacleComponent.passed){
+                    GameManager.INSTANCE.updateScore(1);
+                    obstacleComponent.passed = true;
+                }
+
             }
-        }
+
     }
+
+
 }
