@@ -18,8 +18,8 @@ public class AssetPaths {
     public static final String PLAYER_REGION = "player";
     public static final String OBSTACLE_REGION = "obstacle";
     public static final String BACKGROUND_REGION = "background";
-    public static final String LIVES_COIN = "live_coin";
-    public static final String SCORE_COIN = "score_coin";
+    public static final String LIFE_COLLECTIBLE = "life_collectible";
+    public static final String SCORE_COLLECTIBLE = "score_collectible";
     //UI
     public static final String BACK = "back";
     public static final String BACK_PRESSED = "backPressed";

@@ -10,6 +10,7 @@ import com.mygdx.game.assets.AssetPaths;
 import com.mygdx.game.components.BoundsComponent;
 import com.mygdx.game.components.CleanUpComponent;
 import com.mygdx.game.components.LifeCollectibleComponent;
+import com.mygdx.game.components.ScoreCollectibleComponent;
 import com.mygdx.game.components.SizeComponent;
 import com.mygdx.game.components.MovementComponent;
 import com.mygdx.game.components.ObstacleComponent;
@@ -66,7 +67,7 @@ public class EntityFactory {
 
     }
 
-    public void addObstacle(float x, float y) { //x,y represent spawn X locations
+    public void addObstacle(float x, float y) { //x,y represent spawn locations
         PositionComponent positionComponent = engine.createComponent(PositionComponent.class);
         positionComponent.x = x;
         positionComponent.y = y;
@@ -100,27 +101,27 @@ public class EntityFactory {
         engine.addEntity(entity);
     }
 
-    public void addLifeCollectible(float x, float y) { //x,y represent spawn X locations
+    public void addLifeCollectible(float x, float y) { //x,y represent spawn locations
         PositionComponent positionComponent = engine.createComponent(PositionComponent.class);
         positionComponent.x = x;
         positionComponent.y = y;
 
         BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
-        boundsComponent.bounds.set(x, y, GameConfig.OBSTACLE_BOUNDS_RADIUS);
+        boundsComponent.bounds.set(x, y, GameConfig.LIFE_COLLECTIBLE_BOUNDS_RADIUS);
 
         MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
-        movementComponent.ySpeed = -GameManager.INSTANCE.getDifficultyLevel().getObstacleSpeed();//set obstacles' speed
+        movementComponent.ySpeed = -GameConfig.LIFE_COLLECTIBLE_SPEED;//set speed
 
         CleanUpComponent cleanUpComponent = engine.createComponent(CleanUpComponent.class);
 
         LifeCollectibleComponent lifeCollectibleComponent = engine.createComponent(LifeCollectibleComponent.class);
 
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
-        textureComponent.textureRegion = gameplayAtlas.findRegion(AssetPaths.LIVES_COIN);
+        textureComponent.textureRegion = gameplayAtlas.findRegion(AssetPaths.LIFE_COLLECTIBLE);
 
         SizeComponent sizeComponent = engine.createComponent(SizeComponent.class);
-        sizeComponent.width = GameConfig.OBSTACLE_BOUNDS_DIMENSION;
-        sizeComponent.height = GameConfig.OBSTACLE_BOUNDS_DIMENSION;
+        sizeComponent.width = GameConfig.LIFE_COLLECTIBLE_BOUNDS_DIMENSION;
+        sizeComponent.height = GameConfig.LIFE_COLLECTIBLE_BOUNDS_DIMENSION;
 
 
         Entity entity = engine.createEntity();
@@ -129,6 +130,40 @@ public class EntityFactory {
         entity.add(boundsComponent);
         entity.add(cleanUpComponent);
         entity.add(lifeCollectibleComponent);
+        entity.add(textureComponent);
+        entity.add(sizeComponent);
+        engine.addEntity(entity);
+    }
+
+    public void addScoreCollectible(float x, float y) { ///x,y represent spawn locations
+        PositionComponent positionComponent = engine.createComponent(PositionComponent.class);
+        positionComponent.x = x;
+        positionComponent.y = y;
+
+        BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
+        boundsComponent.bounds.set(x, y, GameConfig.SCORE_COLLECTIBLE_BOUNDS_RADIUS);
+
+        MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
+        movementComponent.ySpeed = -GameConfig.SCORE_COLLECTIBLE_SPEED;//set speed
+
+        CleanUpComponent cleanUpComponent = engine.createComponent(CleanUpComponent.class);
+
+        ScoreCollectibleComponent scoreCollectibleComponent = engine.createComponent(ScoreCollectibleComponent.class);
+
+        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
+        textureComponent.textureRegion = gameplayAtlas.findRegion(AssetPaths.SCORE_COLLECTIBLE);
+
+        SizeComponent sizeComponent = engine.createComponent(SizeComponent.class);
+        sizeComponent.width = GameConfig.SCORE_COLLECTIBLE_BOUNDS_DIMENSION;
+        sizeComponent.height = GameConfig.SCORE_COLLECTIBLE_BOUNDS_DIMENSION;
+
+
+        Entity entity = engine.createEntity();
+        entity.add(positionComponent);
+        entity.add(movementComponent);
+        entity.add(boundsComponent);
+        entity.add(cleanUpComponent);
+        entity.add(scoreCollectibleComponent);
         entity.add(textureComponent);
         entity.add(sizeComponent);
         engine.addEntity(entity);

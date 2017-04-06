@@ -10,6 +10,7 @@ import com.mygdx.game.screens.loading.LoadingScreen;
 
 
 public class AvoidObstacleGame extends Game {
+    private static final Logger log = new Logger(AvoidObstacleGame.class.getName(), Logger.DEBUG);
 
     private AssetManager assetManager;
     private SpriteBatch batch;

@@ -8,8 +8,8 @@ import com.mygdx.game.configurations.GameConfig;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = GameConfig.WIDTH;
-		config.height = GameConfig.HEIGHT;
+		config.width = GameConfig.DESKTOP_WIDTH;
+		config.height = GameConfig.DESKTOP_HEIGHT;
 		new LwjglApplication(new AvoidObstacleGame(), config);
 	}
 }

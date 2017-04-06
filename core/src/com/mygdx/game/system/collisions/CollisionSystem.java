@@ -8,11 +8,10 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.BoundsComponent;
-import com.mygdx.game.components.CleanUpComponent;
 import com.mygdx.game.components.LifeCollectibleComponent;
 import com.mygdx.game.components.ObstacleComponent;
 import com.mygdx.game.components.PlayerComponent;
-import com.mygdx.game.components.PositionComponent;
+import com.mygdx.game.components.ScoreCollectibleComponent;
 
 /**
  * Created by Jay Nguyen on 3/31/2017.
@@ -32,16 +31,17 @@ public class CollisionSystem extends EntitySystem {
             BoundsComponent.class
     ).get();
 
-    private static final Family LIVES_COIN_FAMILY = Family.all(
+    private static final Family LIFE_COLLECTIBLE_FAMILY = Family.all(
             LifeCollectibleComponent.class,
             BoundsComponent.class
     ).get();
 
-    private static final Family CLEAN_UP_FAMILY = Family.all(
-            LifeCollectibleComponent.class,
+    private static final Family SCORE_COLLECTIBLE_FAMILY = Family.all(
             BoundsComponent.class,
-            CleanUpComponent.class
+            ScoreCollectibleComponent.class
     ).get();
+
+
 
 
     public CollisionSystem(CollisionListener listener) {
@@ -52,8 +52,8 @@ public class CollisionSystem extends EntitySystem {
     public void update(float deltaTime) {
         ImmutableArray<Entity> players = getEngine().getEntitiesFor(PLAYER_FAMILY);
         ImmutableArray<Entity> obstacles = getEngine().getEntitiesFor(OBSTACLE_FAMILY);
-        ImmutableArray<Entity> livesCoins = getEngine().getEntitiesFor(LIVES_COIN_FAMILY);
-        ImmutableArray<Entity> cleanUpEntities = getEngine().getEntitiesFor(CLEAN_UP_FAMILY);
+        ImmutableArray<Entity> lifeCollectibles = getEngine().getEntitiesFor(LIFE_COLLECTIBLE_FAMILY);
+        ImmutableArray<Entity> scoreCollectibles = getEngine().getEntitiesFor(SCORE_COLLECTIBLE_FAMILY);
 
         //Check collision between player and obstacles
         for (Entity playerEntity : players) {
@@ -66,34 +66,43 @@ public class CollisionSystem extends EntitySystem {
 
                 if (checkCollision(playerEntity, obstacleEntity)) {
                     obstacleComponent.hit = true;
-                    log.debug("Player Hit Obstacle");
                     listener.hitObstacle();
                 }
             }
         }
 
-        //check collision between player and live coins
+        //check collision between player and life collectibles
         for (Entity playerEntity : players) {
-            for (Entity livesCoinEntity : livesCoins) {
-                LifeCollectibleComponent lifeCollectibleComponent = Mappers.LIVES_COIN_COMPONENT.get(livesCoinEntity);
+            for (Entity lifeCollectible : lifeCollectibles) {
 
-                for(Entity cleanUpEntity : cleanUpEntities) {
-                    PositionComponent positionComponent = Mappers.POSITION_COMPONENT.get(livesCoinEntity);
-                    if(checkCollision(playerEntity, cleanUpEntity)){ //remove entities that are slightly below x axis
-                        getEngine().removeEntity(cleanUpEntity); //remove entity after all processes are done
-                        log.debug("CLEANUPP");
-                    }
-                }
+                LifeCollectibleComponent lifeCollectibleComponent = Mappers.LIFE_COLLECTIBLE_COMPONENT.get(lifeCollectible);
 
-
-                if (lifeCollectibleComponent.hit) {
+                if (lifeCollectibleComponent.lifeCollected) {
                     continue;
                 }
 
-                if (checkCollision(playerEntity, livesCoinEntity)) {
-                    lifeCollectibleComponent.hit = true;
-                    log.debug("Player Hit Lives Coin");
-                    listener.hitLivesCoin();
+                if (checkCollision(playerEntity, lifeCollectible)) {//remove entities that are slightly below x axis
+                    lifeCollectibleComponent.lifeCollected = true;
+                    getEngine().removeEntity(lifeCollectible); //remove entity after all processes are done
+                    listener.hitLifeCollectible();
+                }
+            }
+        }
+
+//        check collision between player and score collectibles
+        for (Entity playerEntity : players) {
+            for (Entity scoreCollectible : scoreCollectibles) {
+
+                ScoreCollectibleComponent scoreCollectibleComponent = Mappers.SCORE_COLLECTIBLE_COMPONENT.get(scoreCollectible);
+
+                if (scoreCollectibleComponent.scoreCollected) {
+                    continue;
+                }
+
+                if (checkCollision(playerEntity, scoreCollectible)) {//remove entities that are slightly below x axis
+                    scoreCollectibleComponent.scoreCollected = true;
+                    getEngine().removeEntity(scoreCollectible); //remove entity after all processes are done
+                    listener.hitScoreCollectible();
                 }
             }
         }

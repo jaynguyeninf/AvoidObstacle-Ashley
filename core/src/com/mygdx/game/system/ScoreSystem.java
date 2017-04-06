@@ -7,7 +7,6 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.mygdx.game.common.GameManager;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.ObstacleComponent;
-import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.PositionComponent;
 import com.mygdx.game.configurations.GameConfig;
 
@@ -22,15 +21,9 @@ public class ScoreSystem extends EntitySystem {
             ObstacleComponent.class
     ).get();
 
-    private static final Family PLAYER_FAMILY = Family.all(
-            PlayerComponent.class,
-            ObstacleComponent.class
-    ).get();
-
     @Override
     public void update(float deltaTime) {
         ImmutableArray<Entity> obstacles = getEngine().getEntitiesFor(OBSTACLE_FAMILY);
-        ImmutableArray<Entity> players = getEngine().getEntitiesFor(PLAYER_FAMILY);
 
             for(Entity entity: obstacles){
                 PositionComponent position = Mappers.POSITION_COMPONENT.get(entity);

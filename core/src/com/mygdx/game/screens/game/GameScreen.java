@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -23,6 +24,8 @@ import com.mygdx.game.system.CleanUpSystem;
 import com.mygdx.game.system.HudRenderSystem;
 import com.mygdx.game.system.LifeCollectibleSpawnSystem;
 import com.mygdx.game.system.MovementSystem;
+import com.mygdx.game.system.ObstacleSpawnSystem;
+import com.mygdx.game.system.ScoreCollectibleSpawnSystem;
 import com.mygdx.game.system.ScoreSystem;
 import com.mygdx.game.system.TextureRenderSystem;
 import com.mygdx.game.system.UserInputSystem;
@@ -39,7 +42,7 @@ import com.mygdx.game.system.debug.GridRenderSystem;
 
 public class GameScreen implements Screen {
     private static final Logger log = new Logger(GameScreen.class.getName(), Logger.DEBUG);
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private final AvoidObstacleGame game;
     private final AssetManager assetManager;
@@ -70,7 +73,7 @@ public class GameScreen implements Screen {
         BitmapFont font = assetManager.get(AssetDescriptors.FONT);
         hitSound = assetManager.get(AssetDescriptors.HIT_SOUND);
         collectLifeSound = assetManager.get(AssetDescriptors.COLLECT_LIFE_SOUND);
-        collectScoreSound= assetManager.get(AssetDescriptors.COLLECT_SCORE_SOUND);
+        collectScoreSound = assetManager.get(AssetDescriptors.COLLECT_SCORE_SOUND);
 
         //implemented abstract methods from CollisionListener
         CollisionListener listener = new CollisionListener() {
@@ -89,10 +92,18 @@ public class GameScreen implements Screen {
             }
 
             @Override
-            public void hitLivesCoin() {
+            public void hitLifeCollectible() {
                 GameManager.INSTANCE.increaseLives();
                 collectLifeSound.play();
 
+            }
+
+            @Override
+            public void hitScoreCollectible() {
+                int scoreValue = MathUtils.random(5, 50);
+                GameManager.INSTANCE.updateScore(scoreValue);
+                collectScoreSound.play();
+                log.debug("score collected = " + scoreValue);
             }
         };
 
@@ -101,20 +112,22 @@ public class GameScreen implements Screen {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldWrapperSystem(viewport)); //before BoundsSystem
         engine.addSystem(new BoundsSystem());
-//        engine.addSystem(new ObstacleSpawnSystem(entityFactory));
+
+        engine.addSystem(new ObstacleSpawnSystem(entityFactory));
         engine.addSystem(new LifeCollectibleSpawnSystem(entityFactory));
+        engine.addSystem(new ScoreCollectibleSpawnSystem(entityFactory));
+
         engine.addSystem(new CleanUpSystem());
         engine.addSystem(new CollisionSystem(listener));
         engine.addSystem(new ScoreSystem());
 
-        engine.addSystem(new TextureRenderSystem(viewport,game.getBatch()));
+        engine.addSystem(new TextureRenderSystem(viewport, game.getBatch()));
 
-        if(DEBUG){
+        if (DEBUG) {
             engine.addSystem(new DebugCameraSystem(camera, GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y));
             engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
             engine.addSystem(new DebugRenderSystem(viewport, shapeRenderer));
         }
-
 
 
         engine.addSystem(new HudRenderSystem(hudViewport, font, game.getBatch()));
@@ -132,20 +145,20 @@ public class GameScreen implements Screen {
         engine.update(delta);
 
         //switch screen when game is over
-        if(GameManager.INSTANCE.isGameOver()){
+        if (GameManager.INSTANCE.isGameOver()) {
             GameManager.INSTANCE.reset(); //reset score and lives otherwise game stay in Menu Screen
             game.setScreen(new MenuScreen(game));
         }
 
         ///called after update() because of removeAllEntities uses scheduledForRemoval
-        if(reset){
+        if (reset) {
             reset = false;
             customAddEntities();
         }
 
     }
 
-    private void customAddEntities(){
+    private void customAddEntities() {
         entityFactory.addBackground();
         entityFactory.addPlayer();
     }

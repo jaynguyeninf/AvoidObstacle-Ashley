@@ -3,6 +3,7 @@ package com.mygdx.game.common;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.mygdx.game.components.BoundsComponent;
 import com.mygdx.game.components.LifeCollectibleComponent;
+import com.mygdx.game.components.ScoreCollectibleComponent;
 import com.mygdx.game.components.SizeComponent;
 import com.mygdx.game.components.MovementComponent;
 import com.mygdx.game.components.ObstacleComponent;
@@ -21,7 +22,8 @@ public class Mappers {
     public static final ComponentMapper<MovementComponent> MOVEMENT_COMPONENT = ComponentMapper.getFor(MovementComponent.class);
     public static final ComponentMapper<PositionComponent> POSITION_COMPONENT = ComponentMapper.getFor(PositionComponent.class);
     public static final ComponentMapper<ObstacleComponent> OBSTACLE_COMPONENT = ComponentMapper.getFor(ObstacleComponent.class);
-    public static final ComponentMapper<LifeCollectibleComponent> LIVES_COIN_COMPONENT = ComponentMapper.getFor(LifeCollectibleComponent.class);
+    public static final ComponentMapper<LifeCollectibleComponent> LIFE_COLLECTIBLE_COMPONENT = ComponentMapper.getFor(LifeCollectibleComponent.class);
+    public static final ComponentMapper<ScoreCollectibleComponent> SCORE_COLLECTIBLE_COMPONENT = ComponentMapper.getFor(ScoreCollectibleComponent.class);
     public static final ComponentMapper<PlayerComponent> PLAYER_COMPONENT = ComponentMapper.getFor(PlayerComponent.class);
     public static final ComponentMapper<TextureComponent> TEXTURE_COMPONENT = ComponentMapper.getFor(TextureComponent.class);
     public static final ComponentMapper<SizeComponent> SIZE_COMPONENT = ComponentMapper.getFor(SizeComponent.class);

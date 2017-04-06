@@ -9,12 +9,12 @@ import com.mygdx.game.configurations.GameConfig;
  * Created by Jay Nguyen on 4/3/2017.
  */
 
-public class LifeCollectibleSpawnSystem extends IntervalSystem {
+public class ScoreCollectibleSpawnSystem extends IntervalSystem {
 
     private final EntityFactory factory;
 
-    public LifeCollectibleSpawnSystem(EntityFactory factory) {
-        super(MathUtils.random(5,10)); // default: 15-30 seconds to spawn
+    public ScoreCollectibleSpawnSystem(EntityFactory factory) {
+        super(MathUtils.random(3,6)); //default: 5;15
         this.factory = factory;
     }
 
@@ -26,6 +26,7 @@ public class LifeCollectibleSpawnSystem extends IntervalSystem {
         float spawnX = MathUtils.random(minX, maxX);
         float spawnY = GameConfig.WORLD_HEIGHT;
 
-        factory.addLifeCollectible(spawnX, spawnY);
+        factory.addScoreCollectible(spawnX, spawnY);
+
     }
 }

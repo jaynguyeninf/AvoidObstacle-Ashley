@@ -98,4 +98,5 @@ public class GameManager {
     public void updateScore(int amount){
         score += amount;
     }
+
 }
