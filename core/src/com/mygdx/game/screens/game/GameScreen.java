@@ -112,18 +112,16 @@ public class GameScreen implements Screen {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new WorldWrapperSystem(viewport)); //before BoundsSystem
         engine.addSystem(new BoundsSystem());
-
         engine.addSystem(new ObstacleSpawnSystem(entityFactory));
         engine.addSystem(new LifeCollectibleSpawnSystem(entityFactory));
         engine.addSystem(new ScoreCollectibleSpawnSystem(entityFactory));
-
         engine.addSystem(new CleanUpSystem());
         engine.addSystem(new CollisionSystem(listener));
         engine.addSystem(new ScoreSystem());
 
         engine.addSystem(new TextureRenderSystem(viewport, game.getBatch()));
 
-        if (DEBUG) {
+        if (DEBUG) { //group all debugging systems
             engine.addSystem(new DebugCameraSystem(camera, GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y));
             engine.addSystem(new GridRenderSystem(viewport, shapeRenderer));
             engine.addSystem(new DebugRenderSystem(viewport, shapeRenderer));
