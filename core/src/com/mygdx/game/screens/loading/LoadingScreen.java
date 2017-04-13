@@ -62,7 +62,7 @@ public class LoadingScreen extends ScreenAdapter {
 
 
         Skin skin = assetManager.get(AssetDescriptors.UI_SKIN);
-        Label label  = new Label("Loading Screen1", skin);
+        Label label  = new Label("Loading Screen", skin);
         Table table = new Table();
         table.add(label).bottom();
         table.pack();
