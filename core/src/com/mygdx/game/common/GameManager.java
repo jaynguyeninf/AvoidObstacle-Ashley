@@ -2,6 +2,7 @@ package com.mygdx.game.common;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.AvoidObstacleGame;
 import com.mygdx.game.configurations.DifficultyLevel;
@@ -97,6 +98,11 @@ public class GameManager {
 
     public void updateScore(int amount){
         score += amount;
+    }
+
+    public void increaseScore(){
+        int amount = MathUtils.random(5,50);
+        updateScore(amount);
     }
 
 }

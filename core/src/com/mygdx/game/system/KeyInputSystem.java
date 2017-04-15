@@ -14,14 +14,14 @@ import com.mygdx.game.configurations.GameConfig;
  * Created by Jay Nguyen on 3/30/2017.
  */
 
-public class UserInputSystem extends IteratingSystem {
+public class KeyInputSystem extends IteratingSystem {
 
     private static final Family FAMILY = Family.all(
             PlayerComponent.class,
             MovementComponent.class
     ).get();
 
-    public UserInputSystem(){
+    public KeyInputSystem(){
         super(FAMILY);
     }
 

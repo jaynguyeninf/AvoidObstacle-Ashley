@@ -1,8 +1,9 @@
 package com.mygdx.game.system;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.systems.IntervalSystem;
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.common.EntityFactory;
+import com.mygdx.game.system.passive.EntityFactorySystem;
 import com.mygdx.game.configurations.GameConfig;
 
 /**
@@ -11,11 +12,15 @@ import com.mygdx.game.configurations.GameConfig;
 
 public class LifeCollectibleSpawnSystem extends IntervalSystem {
 
-    private final EntityFactory factory;
+    private  EntityFactorySystem factory;
 
-    public LifeCollectibleSpawnSystem(EntityFactory factory) {
+    public LifeCollectibleSpawnSystem() {
         super(MathUtils.random(5,10)); // default: 15-30 seconds to spawn
-        this.factory = factory;
+    }
+
+    @Override
+    public void addedToEngine(Engine engine) {
+        factory = engine.getSystem(EntityFactorySystem.class);
     }
 
     @Override

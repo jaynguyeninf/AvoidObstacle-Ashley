@@ -1,6 +1,7 @@
 package com.mygdx.game.assets;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,6 +19,7 @@ public class AssetDescriptors {
     public static final AssetDescriptor<Sound> HIT_SOUND = new AssetDescriptor<Sound>(AssetPaths.HIT_SOUND, Sound.class);
     public static final AssetDescriptor<Sound> COLLECT_LIFE_SOUND = new AssetDescriptor<Sound>(AssetPaths.COLLECT_LIFE_SOUND, Sound.class);
     public static final AssetDescriptor<Sound> COLLECT_SCORE_SOUND = new AssetDescriptor<Sound>(AssetPaths.COLLECT_SCORE_SOUND, Sound.class);
+    public static final AssetDescriptor<Music> THEME_SONG = new AssetDescriptor<Music>(AssetPaths.THEME_SONG, Music.class);
 
     private AssetDescriptors() {
     }

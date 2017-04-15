@@ -1,12 +1,15 @@
-package com.mygdx.game.common;
+package com.mygdx.game.system.passive;
 
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.mygdx.game.assets.AssetDescriptors;
 import com.mygdx.game.assets.AssetPaths;
+import com.mygdx.game.common.GameManager;
 import com.mygdx.game.components.BoundsComponent;
 import com.mygdx.game.components.CleanUpComponent;
 import com.mygdx.game.components.LifeCollectibleComponent;
@@ -20,15 +23,30 @@ import com.mygdx.game.components.TextureComponent;
 import com.mygdx.game.components.WorldWrapperComponent;
 import com.mygdx.game.configurations.GameConfig;
 
-public class EntityFactory {
-    private final PooledEngine engine;
+public class EntityFactorySystem extends EntitySystem {
+
     private final AssetManager assetManager;
+
+    private PooledEngine engine;
     private TextureAtlas gameplayAtlas;
 
-    public EntityFactory(PooledEngine pooledEngine, AssetManager assetManager) {
-        this.engine = pooledEngine;
+    public EntityFactorySystem(AssetManager assetManager) {
         this.assetManager = assetManager;
         gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY_ATLAS);
+    }
+
+    @Override
+    public void update(float deltaTime) {
+    }
+
+    @Override
+    public boolean checkProcessing() {
+        return false;
+    }
+
+    @Override
+    public void addedToEngine(Engine engine) {
+        this.engine = (PooledEngine)engine;
     }
 
     public void addPlayer() {

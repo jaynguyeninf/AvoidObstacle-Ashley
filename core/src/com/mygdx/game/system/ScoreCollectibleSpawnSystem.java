@@ -1,8 +1,9 @@
 package com.mygdx.game.system;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.systems.IntervalSystem;
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.common.EntityFactory;
+import com.mygdx.game.system.passive.EntityFactorySystem;
 import com.mygdx.game.configurations.GameConfig;
 
 /**
@@ -11,11 +12,15 @@ import com.mygdx.game.configurations.GameConfig;
 
 public class ScoreCollectibleSpawnSystem extends IntervalSystem {
 
-    private final EntityFactory factory;
+    private EntityFactorySystem factory;
 
-    public ScoreCollectibleSpawnSystem(EntityFactory factory) {
-        super(MathUtils.random(3,6)); //default: 5;15
-        this.factory = factory;
+    public ScoreCollectibleSpawnSystem() {
+        super(MathUtils.random(3, 6)); //default: 5;15
+    }
+
+    @Override
+    public void addedToEngine(Engine engine) {
+        factory = engine.getSystem(EntityFactorySystem.class);
     }
 
     @Override

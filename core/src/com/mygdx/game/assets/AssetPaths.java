@@ -40,5 +40,8 @@ public class AssetPaths {
     public static final String COLLECT_LIFE_SOUND = "sounds/collect_life.wav";
     public static final String COLLECT_SCORE_SOUND = "sounds/collect_score.wav";
 
+    //================= songs ===================
+    public static final String THEME_SONG = "songs/theme-song.mp3";
+
     private AssetPaths(){}
 }

@@ -1,17 +1,21 @@
 package com.mygdx.game.system.collisions;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Logger;
+import com.mygdx.game.common.GameManager;
 import com.mygdx.game.common.Mappers;
 import com.mygdx.game.components.BoundsComponent;
 import com.mygdx.game.components.LifeCollectibleComponent;
 import com.mygdx.game.components.ObstacleComponent;
 import com.mygdx.game.components.PlayerComponent;
 import com.mygdx.game.components.ScoreCollectibleComponent;
+import com.mygdx.game.system.passive.EntityFactorySystem;
+import com.mygdx.game.system.passive.SoundSystem;
 
 /**
  * Created by Jay Nguyen on 3/31/2017.
@@ -19,7 +23,6 @@ import com.mygdx.game.components.ScoreCollectibleComponent;
 
 public class CollisionSystem extends EntitySystem {
     private static final Logger log = new Logger(CollisionSystem.class.getName(), Logger.DEBUG);
-    private final CollisionListener listener;
 
     private static final Family PLAYER_FAMILY = Family.all(
             PlayerComponent.class,
@@ -41,11 +44,16 @@ public class CollisionSystem extends EntitySystem {
             ScoreCollectibleComponent.class
     ).get();
 
+    private EntityFactorySystem entityFactorySystem;
+    private SoundSystem soundSystem;
 
+    public CollisionSystem() {
+    }
 
-
-    public CollisionSystem(CollisionListener listener) {
-        this.listener = listener;
+    @Override
+    public void addedToEngine(Engine engine) {
+        soundSystem = engine.getSystem(SoundSystem.class);
+        entityFactorySystem=engine.getSystem(EntityFactorySystem.class);
     }
 
     @Override
@@ -66,7 +74,16 @@ public class CollisionSystem extends EntitySystem {
 
                 if (checkCollision(playerEntity, obstacleEntity)) {
                     obstacleComponent.hit = true;
-                    listener.hitObstacle();
+                    soundSystem.playHitSound();
+                    GameManager.INSTANCE.decreaseLives();
+
+                    if (GameManager.INSTANCE.isGameOver()) {
+                        GameManager.INSTANCE.updateHighScore();
+                    } else {
+                        getEngine().removeAllEntities();
+                        entityFactorySystem.addBackground();
+                        entityFactorySystem.addPlayer();
+                    }
                 }
             }
         }
@@ -82,9 +99,11 @@ public class CollisionSystem extends EntitySystem {
                 }
 
                 if (checkCollision(playerEntity, lifeCollectible)) {//remove entities that are slightly below x axis
+                    soundSystem.playCollectLifeSound();
                     lifeCollectibleComponent.lifeCollected = true;
                     getEngine().removeEntity(lifeCollectible); //remove entity after all processes are done
-                    listener.hitLifeCollectible();
+                    GameManager.INSTANCE.increaseLives();
+
                 }
             }
         }
@@ -100,9 +119,10 @@ public class CollisionSystem extends EntitySystem {
                 }
 
                 if (checkCollision(playerEntity, scoreCollectible)) {//remove entities that are slightly below x axis
+                    soundSystem.playCollectScoreSound();
                     scoreCollectibleComponent.scoreCollected = true;
                     getEngine().removeEntity(scoreCollectible); //remove entity after all processes are done
-                    listener.hitScoreCollectible();
+                    GameManager.INSTANCE.increaseScore();
                 }
             }
         }

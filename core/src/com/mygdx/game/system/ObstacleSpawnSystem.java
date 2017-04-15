@@ -1,21 +1,28 @@
 package com.mygdx.game.system;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.systems.IntervalSystem;
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.common.EntityFactory;
 import com.mygdx.game.configurations.GameConfig;
+import com.mygdx.game.system.passive.EntityFactorySystem;
 
 /**
  * Created by Jay Nguyen on 3/30/2017.
  */
 
+
+
 public class ObstacleSpawnSystem extends IntervalSystem {
 
-    private final EntityFactory factory;
+    private EntityFactorySystem factory;
 
-    public ObstacleSpawnSystem(EntityFactory factory) {
+    public ObstacleSpawnSystem() {
         super(GameConfig.OBSTACLE_SPAWN_TIME);
-        this.factory = factory;
+    }
+
+    @Override
+    public void addedToEngine(Engine engine) {
+        factory = engine.getSystem(EntityFactorySystem.class);
     }
 
     @Override
